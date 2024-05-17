@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Efek Hujan </title>
+  <style>
+    body {
+        background-image: url('bgmap.png');
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // ukuran canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // jumlah titik hujan
+    const numDrops = 250;
+    const drops = [];
+
+    // properti titik hujan (dimodifikasi)
+    class Drop {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height - 100; // mulai di luar canvas
+        this.width = Math.random() * 1 + 2; // lebar acak
+        this.height = this.width * 5; // tinggi dua kali lebar (titik hujan memanjang)
+        this.speed = Math.random() + 2; // kecepatan acak
+        this.color = '#fff';
+      }
+
+      draw() {
+        ctx.beginPath();
+        // membuat elips dengan fillRect untuk bentuk memanjang
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = this.color;
+      }
+
+      update() {
+        this.y += this.speed;
+
+        // jika melewati bawah canvas, kembalikan ke atas
+        if (this.y > canvas.height) {
+          this.y = 0;
+        }
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < numDrops; i++) {
+        drops.push(new Drop());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drops.forEach((drop) => {
+        drop.draw();
+        drop.update();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+  </script>
+</body>
+</html>
